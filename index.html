@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SENU OPTIMIZATION</title>
+
+<style>
+body{
+    margin:0;
+    background:black;
+    overflow:hidden;
+    font-family:Arial;
+}
+
+.content{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+    z-index:10;
+}
+
+h1{
+    color:#00ff66;
+    font-size:50px;
+    text-shadow:0 0 20px #00ff66;
+}
+
+a{
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 25px;
+    background:#00ff66;
+    color:black;
+    text-decoration:none;
+    font-weight:bold;
+    border-radius:8px;
+    box-shadow:0 0 20px #00ff66;
+}
+
+canvas{
+    position:absolute;
+    top:0;
+    left:0;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="content">
+   <div class="content">
+
+    <h1>SENU OPTIMIZATION</h1>
+
+    <a href="https://github.com/senuthdamsuwa725-lgtm/Senu-Optimizer-setup/releases/latest/download/SENUOptimizerSetup.exe"
+       target="_blank">
+       DOWNLOAD APP
+    </a>
+
+    <br><br>
+
+    <a href="https://www.youtube.com/@SENUOPTIMIZATION"
+       target="_blank"
+       style="background:#FF0000;color:white;">
+       YOUTUBE
+    </a>
+
+    <br><br>
+
+    <a href="https://www.tiktok.com/@senuoptimization"
+       target="_blank"
+       style="background:#111111;color:white;border:1px solid #00ff66;">
+       TIKTOK
+    </a>
+
+    <br><br>
+
+    <a href="https://discord.gg/u7nGGyYQ7C"
+       target="_blank"
+       style="background:#5865F2;color:white;">
+       DISCORD SERVER
+    </a>
+
+    <br><br>
+
+    <a href="https://wa.me/740368141"
+       target="_blank"
+       style="background:#25D366;color:white;">
+       WHATSAPP
+    </a>
+
+</div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let mouse = {
+    x: canvas.width/2,
+    y: canvas.height/2,
+    radius: 140
+};
+
+window.addEventListener("mousemove",(e)=>{
+    mouse.x = e.x;
+    mouse.y = e.y;
+});
+
+let particles = [];
+
+for(let i=0;i<90;i++){
+    particles.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        vx:(Math.random()-0.5)*1.2,
+        vy:(Math.random()-0.5)*1.2,
+        size: Math.random()*6+3
+    });
+}
+
+// draw triangle
+function drawTriangle(x,y,size){
+    ctx.beginPath();
+    ctx.moveTo(x, y - size);
+    ctx.lineTo(x + size, y + size);
+    ctx.lineTo(x - size, y + size);
+    ctx.closePath();
+
+    ctx.fillStyle = "#00ff66";
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = "#00ff66";
+    ctx.fill();
+}
+
+// draw neon line
+function drawLine(p1,p2,opacity){
+    ctx.beginPath();
+    ctx.moveTo(p1.x,p1.y);
+    ctx.lineTo(p2.x,p2.y);
+    ctx.strokeStyle = `rgba(0,255,102,${opacity})`;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#00ff66";
+    ctx.stroke();
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // move particles
+    for(let p of particles){
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        // mouse attract
+        let dx = mouse.x - p.x;
+        let dy = mouse.y - p.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+
+        if(dist < mouse.radius){
+            let force = (mouse.radius - dist) / mouse.radius;
+            p.x += dx * force * 0.05;
+            p.y += dy * force * 0.05;
+        }
+
+        drawTriangle(p.x,p.y,p.size);
+    }
+
+    // CONNECT LINES (IMPORTANT PART)
+    for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+            let p1 = particles[i];
+            let p2 = particles[j];
+
+            let dx = p1.x - p2.x;
+            let dy = p1.y - p2.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            if(dist < 120){
+                let opacity = 1 - (dist / 120);
+                drawLine(p1,p2,opacity);
+            }
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener("resize",()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
